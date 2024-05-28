@@ -57,5 +57,23 @@ resource "google_compute_region_instance_group_manager" "example_group" {
     health_check      = google_compute_health_check.example.self_link
     initial_delay_sec = 300
   }
-  
+
+}
+
+
+#Auto-scaler
+resource "google_compute_region_autoscaler" "scale_1" {
+  name     = "autoscaler"
+  project  = "class5-416923"
+  provider = google
+  target   = google_compute_region_instance_group_manager.example_group.id
+  region     = "europe-southwest1"
+  autoscaling_policy {
+    max_replicas = 8
+    min_replicas = 3
+
+    cpu_utilization {
+      target = 0.6  # Target 60% CPU utilization
+    }
+  }
 }
